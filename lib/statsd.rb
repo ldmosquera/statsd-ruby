@@ -87,6 +87,14 @@ class Statsd
     result
   end
 
+  # Adds the given value to a Set. The statsd server will count unique values for each
+  # set and then record the unique count to Graphite.
+  #
+  # @param [String] stat stat name
+  # @param [String] value value
+  # @param [Integer] sample_rate sample rate, 1 for always
+  def set(stat, value, sample_rate=1); send stat, value, 's', sample_rate end
+
   private
 
   def sampled(sample_rate)

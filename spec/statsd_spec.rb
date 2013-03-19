@@ -118,6 +118,21 @@ describe Statsd do
     end
   end
 
+  describe "#set" do
+    it "should format the message according to the statsd spec" do
+      @statsd.set('foobar', 'lala')
+      @statsd.socket.recv.must_equal ['foobar:lala|s']
+    end
+
+    describe "with a sample rate" do
+      before { class << @statsd; def rand; 0; end; end } # ensure delivery
+      it "should format the message according to the statsd spec" do
+        @statsd.set('foobar', 'lala', 0.5)
+        @statsd.socket.recv.must_equal ['foobar:lala|s|@0.5']
+      end
+    end
+  end
+
   describe "with namespace" do
     before { @statsd.namespace = 'service' }
 
